@@ -2,39 +2,19 @@ name: onlook-dev
 
 services:
   onlook-dev:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    container_name: onlook-web
+    image: ${IMAGE_REGISTRY:-}onlook-web-dev:${IMAGE_TAG:-latest}
+    container_name: onlook-web-dev
     restart: unless-stopped
-    working_dir: /app
     env_file:
       - .env
-    environment:
-      NODE_ENV: development
-      HOSTNAME: 0.0.0.0
-      PORT: 3000
-      NEXT_TELEMETRY_DISABLED: "1"
-    volumes:
-      - ./:/app
-      - onlook-dev-node-modules:/app/node_modules
-      - onlook-dev-next:/app/apps/web/client/.next
+    ports:
+      - "3000:3000"
     network_mode: host
-    command: bun dev --hostname 0.0.0.0
 
   onlook-seed:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
+    image: ${IMAGE_REGISTRY:-}onlook-web-dev:${IMAGE_TAG:-latest}
     working_dir: /app
     env_file:
       - .env
-    volumes:
-      - ./:/app
-      - onlook-dev-node-modules:/app/node_modules
     network_mode: host
     command: bun db:seed
-
-volumes:
-  onlook-dev-node-modules:
-  onlook-dev-next:
