@@ -68,9 +68,9 @@ export const env = createEnv({
      * `NEXT_PUBLIC_`.
      */
     client: {
-        NEXT_PUBLIC_SITE_URL: z.url().default('http://localhost:3000'),
-        NEXT_PUBLIC_SUPABASE_URL: z.string(),
-        NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
+        NEXT_PUBLIC_SITE_URL: z.string().default('http://localhost:3000'),
+        NEXT_PUBLIC_SUPABASE_URL: z.string().default('http://127.0.0.1:54321'),
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().default('placeholder_anon_key'),
         NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
         NEXT_PUBLIC_POSTHOG_HOST: z.string().optional(),
         NEXT_PUBLIC_GLEAP_API_KEY: z.string().optional(),
