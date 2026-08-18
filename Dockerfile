@@ -1,5 +1,5 @@
 # Build Onlook web client
-FROM oven/bun:1-debian
+FROM oven/bun:1-debian AS builder
 
 LABEL org.opencontainers.image.source="https://github.com/onlook-dev/onlook"
 
@@ -20,6 +20,18 @@ COPY . .
 RUN bun install
 RUN cd apps/web/client && bun run build:standalone
 
+FROM oven/bun:1-debian AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
+
+# The standalone output contains only the runtime files and traced dependencies.
+COPY --from=builder /app/apps/web/client/.next/standalone/ ./
+
 # Expose the application port
 EXPOSE 3000
 
@@ -27,5 +39,5 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD bun -e "fetch('http://localhost:3000').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))"
 
-# Start the Next.js server
-CMD ["bun", "apps/web/client/.next/standalone/apps/web/client/server.js"]
+# Start the Next.js standalone server
+CMD ["bun", "apps/web/client/server.js"]
