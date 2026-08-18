@@ -11,8 +11,12 @@ import { api } from '@/trpc/react';
 export default function AuthRedirect() {
     const router = useRouter();
     const isDev = env.NEXT_PUBLIC_ENV === 'development';
-    const { data: subscription, isLoading: subscriptionLoading } = api.subscription.get.useQuery();
-    const { data: legacySubscription, isLoading: legacyLoading } = api.subscription.getLegacySubscriptions.useQuery();
+    const { data: subscription, isLoading: subscriptionLoading } = api.subscription.get.useQuery(undefined, {
+        enabled: !isDev,
+    });
+    const { data: legacySubscription, isLoading: legacyLoading } = api.subscription.getLegacySubscriptions.useQuery(undefined, {
+        enabled: !isDev,
+    });
 
     useEffect(() => {
         const handleRedirect = async () => {
@@ -54,4 +58,4 @@ export default function AuthRedirect() {
             </div>
         </div>
     );
-} 
+}

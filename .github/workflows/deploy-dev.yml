@@ -49,6 +49,9 @@ jobs:
           platforms: linux/amd64
           build-args: |
             NEXT_PUBLIC_ENV=development
+            NEXT_PUBLIC_SUPABASE_URL=https://kshwfxpqpsazfxghjfkw.supabase.co
+            NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtzaHdmeHBxcHNhemZ4Z2hqZmt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcwNTIyMzAsImV4cCI6MjEwMjYyODIzMH0.kAEom39ow6Ys-TgmQvrBBrm57l4gF6jpWT4CEk-8e0k
+            NEXT_PUBLIC_SITE_URL=https://onlook.hungnguyen.online
           push: true
           tags: |
             ${{ env.IMAGE_PREFIX }}/onlook-web-dev:${{ steps.image.outputs.tag }}
