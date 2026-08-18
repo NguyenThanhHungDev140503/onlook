@@ -11,7 +11,6 @@ import { type Metadata } from 'next';
 import { NextIntlClientProvider } from 'next-intl';
 import { getLocale } from 'next-intl/server';
 import { Inter } from 'next/font/google';
-import Script from 'next/script';
 import { ThemeProvider } from './_components/theme';
 import { AuthProvider } from './auth/auth-context';
 import { faqSchema, organizationSchema } from './seo';
@@ -74,7 +73,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <body>
                 {isProduction && (
                     <>
-                        <Script src="https://z.onlook.com/cdn-cgi/zaraz/i.js" strategy="lazyOnload" />
                         <RB2BLoader />
                     </>
                 )}
