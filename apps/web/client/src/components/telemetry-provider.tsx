@@ -33,8 +33,6 @@ export function TelemetryProvider({ children }: { children: React.ReactNode }) {
             } catch (e) {
                 console.warn("PostHog init failed", e);
             }
-        } else {
-            console.warn("PostHog key is not set, skipping initialization");
         }
 
         if (env.NEXT_PUBLIC_GLEAP_API_KEY) {

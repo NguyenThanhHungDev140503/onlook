@@ -14,6 +14,9 @@ export async function createClient(request: NextRequest) {
                     return request.cookies.getAll();
                 },
             },
+            global: {
+                fetch: typeof Bun !== 'undefined' && Bun.fetch ? Bun.fetch : fetch,
+            },
         },
     );
 }

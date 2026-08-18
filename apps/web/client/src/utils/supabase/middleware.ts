@@ -27,6 +27,9 @@ export async function updateSession(request: NextRequest) {
                     );
                 },
             },
+            global: {
+                fetch: typeof Bun !== 'undefined' && Bun.fetch ? Bun.fetch : fetch,
+            },
         },
     );
 
