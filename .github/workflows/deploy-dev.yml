@@ -149,6 +149,8 @@ jobs:
           HOSTNAME=0.0.0.0
           ENV
             chmod 600 .env
+          else
+            sed -i 's/^NODE_ENV=.*/NODE_ENV=development/' .env
           fi
 
           previous_tag="$(sed -n 's/^IMAGE_TAG=//p' .env | tail -1)"
