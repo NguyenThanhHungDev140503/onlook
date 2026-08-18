@@ -35,14 +35,10 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
         error,
     } = await supabase.auth.getUser();
 
-    if (error) {
-        throw new TRPCError({ code: 'UNAUTHORIZED', message: error.message });
-    }
-
     return {
         db,
         supabase,
-        user,
+        user: error ? null : user,
         ...opts,
     };
 };
@@ -180,4 +176,3 @@ export const adminProcedure = t.procedure.use(timingMiddleware).use(({ ctx, next
         },
     });
 });
-
