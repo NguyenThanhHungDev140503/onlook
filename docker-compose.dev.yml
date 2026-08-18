@@ -1,0 +1,36 @@
+name: onlook-dev
+
+services:
+  onlook-dev:
+    image: oven/bun:1-debian
+    container_name: onlook-web
+    restart: unless-stopped
+    working_dir: /app
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: development
+      HOSTNAME: 0.0.0.0
+      PORT: 3000
+      NEXT_TELEMETRY_DISABLED: "1"
+    volumes:
+      - ./:/app
+      - onlook-dev-node-modules:/app/node_modules
+      - onlook-dev-next:/app/apps/web/client/.next
+    network_mode: host
+    command: sh -c "bun install --frozen-lockfile && bun dev --hostname 0.0.0.0"
+
+  onlook-seed:
+    image: oven/bun:1-debian
+    working_dir: /app
+    env_file:
+      - .env
+    volumes:
+      - ./:/app
+      - onlook-dev-node-modules:/app/node_modules
+    network_mode: host
+    command: sh -c "bun install --frozen-lockfile && bun db:seed"
+
+volumes:
+  onlook-dev-node-modules:
+  onlook-dev-next:
