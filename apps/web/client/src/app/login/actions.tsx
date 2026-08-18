@@ -38,7 +38,7 @@ export async function login(provider: SignInMethod.GITHUB | SignInMethod.GOOGLE)
 }
 
 export async function devLogin() {
-    if (env.NODE_ENV !== 'development') {
+    if (env.NODE_ENV !== 'development' && env.NEXT_PUBLIC_ENV !== 'development') {
         throw new Error('Dev login is only available in development mode');
     }
 
