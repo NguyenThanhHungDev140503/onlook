@@ -1,0 +1,60 @@
+name: Deploy Onlook dev to VPS
+
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+concurrency:
+  group: onlook-dev
+  cancel-in-progress: false
+
+env:
+  VPS_APP_DIR: /opt/onlook
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out dev source
+        uses: actions/checkout@v4
+
+      - name: Configure SSH
+        env:
+          VPS_SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$VPS_SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: Sync dev source
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+        run: |
+          rsync -az --info=progress2 \
+            --exclude='.env' \
+            --exclude='.git/' \
+            --exclude='node_modules/' \
+            --exclude='.next/' \
+            -e 'ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes' \
+            ./ "$VPS_HOST:$VPS_APP_DIR/"
+
+      - name: Restart dev runtime
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+        run: |
+          ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes "$VPS_HOST" \
+            'cd /opt/onlook && docker compose -f docker-compose.dev.yml config --quiet && docker compose -f docker-compose.dev.yml build onlook-dev && docker compose -f docker-compose.dev.yml up -d onlook-dev'
+
+      - name: Verify dev runtime
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+        run: |
+          ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes "$VPS_HOST" \
+            'cd /opt/onlook && docker compose -f docker-compose.dev.yml ps onlook-dev && curl -fsS http://127.0.0.1:3000 >/dev/null'

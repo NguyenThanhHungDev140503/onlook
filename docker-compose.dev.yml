@@ -2,7 +2,9 @@ name: onlook-dev
 
 services:
   onlook-dev:
-    image: oven/bun:1-debian
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     container_name: onlook-web
     restart: unless-stopped
     working_dir: /app
@@ -18,10 +20,12 @@ services:
       - onlook-dev-node-modules:/app/node_modules
       - onlook-dev-next:/app/apps/web/client/.next
     network_mode: host
-    command: sh -c "bun install --frozen-lockfile && bun dev --hostname 0.0.0.0"
+    command: bun dev --hostname 0.0.0.0
 
   onlook-seed:
-    image: oven/bun:1-debian
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     working_dir: /app
     env_file:
       - .env
@@ -29,7 +33,7 @@ services:
       - ./:/app
       - onlook-dev-node-modules:/app/node_modules
     network_mode: host
-    command: sh -c "bun install --frozen-lockfile && bun db:seed"
+    command: bun db:seed
 
 volumes:
   onlook-dev-node-modules:

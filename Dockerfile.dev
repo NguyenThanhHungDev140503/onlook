@@ -1,0 +1,12 @@
+FROM oven/bun:1-debian
+
+WORKDIR /app
+
+ENV NODE_ENV=development
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV HOSTNAME=0.0.0.0
+ENV PORT=3000
+
+COPY . .
+
+RUN bun install --frozen-lockfile
