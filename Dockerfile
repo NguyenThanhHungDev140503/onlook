@@ -5,6 +5,10 @@ LABEL org.opencontainers.image.source="https://github.com/onlook-dev/onlook"
 
 WORKDIR /app
 
+# Build arguments for client-side environment
+ARG NEXT_PUBLIC_ENV=production
+ENV NEXT_PUBLIC_ENV=$NEXT_PUBLIC_ENV
+
 # Set build and production environment
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1

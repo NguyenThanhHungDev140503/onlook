@@ -71,6 +71,7 @@ export const env = createEnv({
         NEXT_PUBLIC_SITE_URL: z.string().default('http://localhost:3000'),
         NEXT_PUBLIC_SUPABASE_URL: z.string().default('http://127.0.0.1:54321'),
         NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().default('placeholder_anon_key'),
+        NEXT_PUBLIC_ENV: z.enum(['development', 'test', 'production']).default('development'),
         NEXT_PUBLIC_POSTHOG_KEY: z.string().optional(),
         NEXT_PUBLIC_POSTHOG_HOST: z.string().optional(),
         NEXT_PUBLIC_GLEAP_API_KEY: z.string().optional(),
@@ -95,6 +96,7 @@ export const env = createEnv({
         NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
         NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
         NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+        NEXT_PUBLIC_ENV: (process.env.NEXT_PUBLIC_ENV ?? process.env.NODE_ENV) as 'development' | 'test' | 'production',
 
         // Posthog
         NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,

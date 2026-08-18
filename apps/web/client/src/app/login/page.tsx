@@ -1,5 +1,6 @@
 'use client';
 
+import { env } from '@/env';
 import { useGetBackground } from '@/hooks/use-get-background';
 import { transKeys } from '@/i18n/keys';
 import { LocalForageKeys, Routes } from '@/utils/constants';
@@ -12,7 +13,7 @@ import { useSearchParams } from 'next/navigation';
 import { DevLoginButton, LoginButton } from '../_components/login-button';
 
 export default function LoginPage() {
-    const isDev = process.env.NODE_ENV === 'development';
+    const isDev = env.NEXT_PUBLIC_ENV === 'development';
     const t = useTranslations();
     const backgroundUrl = useGetBackground('login');
     const returnUrl = useSearchParams().get(LocalForageKeys.RETURN_URL);

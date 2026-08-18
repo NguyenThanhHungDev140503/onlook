@@ -47,6 +47,8 @@ jobs:
           context: .
           file: Dockerfile
           platforms: linux/amd64
+          build-args: |
+            NEXT_PUBLIC_ENV=development
           push: true
           tags: |
             ${{ env.IMAGE_PREFIX }}/onlook-web-dev:${{ steps.image.outputs.tag }}
