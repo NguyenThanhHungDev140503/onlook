@@ -1,5 +1,6 @@
 'use client';
 
+import { env } from '@/env';
 import { LocalForageKeys, Routes } from '@/utils/constants';
 import { sanitizeReturnUrl } from '@/utils/url';
 import localforage from 'localforage';
@@ -9,11 +10,21 @@ import { api } from '@/trpc/react';
 
 export default function AuthRedirect() {
     const router = useRouter();
+    const isDev = env.NEXT_PUBLIC_ENV === 'development';
     const { data: subscription, isLoading: subscriptionLoading } = api.subscription.get.useQuery();
     const { data: legacySubscription, isLoading: legacyLoading } = api.subscription.getLegacySubscriptions.useQuery();
 
     useEffect(() => {
         const handleRedirect = async () => {
+            // In dev mode, bypass subscription requirement and redirect immediately
+            if (isDev) {
+                const returnUrl = await localforage.getItem<string>(LocalForageKeys.RETURN_URL);
+                await localforage.removeItem(LocalForageKeys.RETURN_URL);
+                const sanitizedUrl = sanitizeReturnUrl(returnUrl);
+                router.replace(sanitizedUrl);
+                return;
+            }
+
             // Wait for both subscription queries to complete
             if (subscriptionLoading || legacyLoading) {
                 return;
@@ -33,7 +44,7 @@ export default function AuthRedirect() {
             router.replace(sanitizedUrl);
         };
         handleRedirect();
-    }, [router, subscription, legacySubscription, subscriptionLoading, legacyLoading]);
+    }, [router, subscription, legacySubscription, subscriptionLoading, legacyLoading, isDev]);
 
     return (
         <div className="flex h-screen w-screen items-center justify-center">
